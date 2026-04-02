@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Diagnóstico de Sistema Visual — Pepica</title>
+<meta name="description" content="¿Tu marca respira o sobrevive? Descubre el estado real de tu sistema visual en 3 minutos.">
+<meta property="og:title" content="Diagnóstico de Marca — Pepica">
+<meta property="og:description" content="Un espacio de introspección para entender si tu marca respira o solo sobrevive al ruido visual.">
+<meta property="og:image" content="https://pepica.es/wp-content/uploads/2026/01/pepicaestudio_european_swallow_in_flight_calm_minimal_fine_art__14ee99a4-4bab-42b7-99a6-50e755f63eb0.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     WEBHOOK DE MAKE — REEMPLAZA ESTA URL CUANDO LO TENGAS
+     ============================================================ -->
+<script>
+  const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/5rufikm2er3xt98wzoyn8dofaxx5rujv";
+</script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F0EBE0;
+    --cream-d: #E3DAC9;
+    --cream-dd: #D5CDB8;
+    --terra: #8C4A35;
+    --terra-l: #B5694F;
+    --terra-p: #F0E4DE;
+    --terra-pp: #E8D0C5;
+    --brown: #2C2417;
+    --brown-m: #5C4A38;
+    --brown-l: #8C7A68;
+    --gold: #C4A882;
+    --white: #FDFAF6;
+  }
+
+  html {
+    height: 100%;
+    background: #D8D0C4;
+  }
+
+  body {
+    min-height: 100%;
+    background: #D8D0C4;
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0;
+  }
+
+  /* ── SHELL MÓVIL ── */
+  .shell {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 80px rgba(0,0,0,0.2);
+  }
+
+  @media (min-width: 480px) {
+    body { padding: 24px 0 48px; align-items: center; }
+    .shell {
+      min-height: auto;
+      border-radius: 32px;
+      max-height: 860px;
+      overflow-y: auto;
+    }
+  }
+
+  /* ── PANTALLAS ── */
+  .screen {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+
+  @media (min-width: 480px) {
+    .screen { min-height: 760px; }
+  }
+
+  .screen.on { display: flex; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    background: var(--cream);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--cream-d);
+  }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--brown);
+    letter-spacing: 0.02em;
+  }
+
+  .logo a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .btn-nav {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--brown-l);
+    font-size: 17px;
+    padding: 6px 10px;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+
+  .btn-nav:hover { background: var(--cream-d); }
+
+  .topbar-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brown-l);
+  }
+
+  /* ── BARRA DE PROGRESO ── */
+  .progress {
+    height: 2px;
+    background: var(--cream-d);
+    position: sticky;
+    top: 65px;
+    z-index: 9;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--terra);
+    transition: width 0.5s ease;
+  }
+
+  /* ── STEP BADGE ── */
+  .step-badge { padding: 24px 24px 0; }
+
+  .step-n {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 300;
+    color: var(--terra);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .step-phase {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brown-l);
+    border-left: 2px solid var(--terra);
+    padding-left: 10px;
+    display: inline-block;
+  }
+
+  /* ── CONTENIDO ── */
+  .content {
+    padding: 28px 24px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .q {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 29px;
+    font-weight: 400;
+    color: var(--brown);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .q em { font-style: italic; color: var(--terra); }
+
+  .sub {
+    font-size: 13px;
+    color: var(--brown-l);
+    line-height: 1.65;
+    margin-bottom: 28px;
+  }
+
+  /* ── OPCIONES ── */
+  .opts {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-bottom: 28px;
+    flex: 1;
+  }
+
+  .opt {
+    background: var(--cream-d);
+    border: 1.5px solid transparent;
+    border-radius: 16px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .opt:hover { border-color: rgba(140,74,53,0.35); background: var(--terra-p); }
+  .opt:active { transform: scale(0.985); }
+  .opt.sel { border-color: var(--terra); background: var(--terra-p); }
+
+  .opt-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--white);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .opt-icon svg { width: 16px; height: 16px; stroke: var(--terra); fill: none; stroke-width: 1.5; }
+
+  .opt-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--brown);
+    margin-bottom: 5px;
+  }
+
+  .opt-desc { font-size: 12px; color: var(--brown-m); line-height: 1.5; }
+
+  .check {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--terra);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    font-weight: 600;
+  }
+
+  .opt.sel .check { display: flex; }
+
+  /* ── OPCIONES SIMPLES ── */
+  .simple-opts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex: 1;
+  }
+
+  .sopt {
+    background: var(--cream-d);
+    border: 1.5px solid transparent;
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sopt:hover { border-color: rgba(140,74,53,0.35); background: var(--terra-p); }
+  .sopt:active { transform: scale(0.985); }
+  .sopt.sel { border-color: var(--terra); background: var(--terra-p); }
+  .sopt .check { position: absolute; top: 14px; right: 14px; width: 22px; height: 22px; border-radius: 50%; background: var(--terra); display: none; align-items: center; justify-content: center; font-size: 12px; color: white; font-weight: 600; }
+  .sopt.sel .check { display: flex; }
+
+  .sopt-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--brown);
+    margin-bottom: 5px;
+  }
+
+  .sopt-desc { font-size: 12px; color: var(--brown-m); line-height: 1.5; }
+
+  /* ── SLIDER ── */
+  .slider-wrap { margin-bottom: 28px; }
+
+  .sl-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .sl-lbl .mini {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brown-l);
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .sl-lbl .word {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--brown);
+  }
+
+  .sl-ticks {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+    margin-bottom: 5px;
+  }
+
+  .sl-ticks span { font-size: 10px; color: var(--brown-l); width: 18px; text-align: center; }
+
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--terra) 0%, var(--terra) 40%, var(--cream-dd) 40%);
+    outline: none;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--terra);
+    border: 3px solid var(--white);
+    box-shadow: 0 2px 10px rgba(140,74,53,0.35);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+
+  input[type=range]::-webkit-slider-thumb:active { transform: scale(1.15); }
+
+  .sl-val {
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    color: var(--terra);
+    line-height: 1;
+  }
+
+  /* ── FORMULARIO ── */
+  .form-g { margin-bottom: 14px; }
+
+  .form-l {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brown-l);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .form-i {
+    width: 100%;
+    background: var(--cream-d);
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--brown);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .form-i:focus { border-color: var(--terra); background: var(--white); }
+  .form-i::placeholder { color: var(--brown-l); }
+
+  .form-note {
+    font-size: 11px;
+    color: var(--brown-l);
+    line-height: 1.55;
+    font-style: italic;
+    text-align: center;
+    margin: 12px 0;
+  }
+
+  /* ── BOTÓN PRINCIPAL ── */
+  .btn {
+    width: 100%;
+    background: var(--terra);
+    color: var(--white);
+    border: none;
+    border-radius: 14px;
+    padding: 17px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+    margin-top: auto;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn:hover { background: var(--terra-l); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0) scale(0.99); }
+  .btn:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+  .btn.loading { opacity: 0.7; cursor: wait; }
+
+  .timer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--brown-l);
+    margin-top: 10px;
+    letter-spacing: 0.07em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  /* ── PANTALLA BIENVENIDA ── */
+  .welcome-hero {
+    padding: 28px 24px 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .w-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 400;
+    color: var(--brown);
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+
+  .w-title em { font-style: italic; color: var(--terra); }
+
+  .w-body {
+    font-size: 14px;
+    color: var(--brown-m);
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+
+  .bird {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 0;
+    min-height: 220px;
+  }
+
+  .bird img {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 16px;
+    display: block;
+  }
+
+  .welcome-foot { padding: 0 24px 28px; }
+
+  /* ── PANTALLA RESULTADO ── */
+  .res-head {
+    background: var(--terra);
+    padding: 32px 24px 28px;
+    color: var(--white);
+  }
+
+  .res-tag {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+
+  .res-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .res-type { font-size: 12px; opacity: 0.75; letter-spacing: 0.05em; }
+
+  .res-body { padding: 28px 24px; }
+
+  .res-sec {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terra);
+    border-left: 2px solid var(--terra);
+    padding-left: 10px;
+    margin-bottom: 12px;
+  }
+
+  .res-text {
+    font-size: 15px;
+    color: var(--brown-m);
+    line-height: 1.78;
+    margin-bottom: 24px;
+  }
+
+  .res-action {
+    background: var(--terra-p);
+    border-left: 3px solid var(--terra);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 18px;
+    margin-bottom: 28px;
+  }
+
+  .res-action-l {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 7px;
+  }
+
+  .res-action-t {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--brown);
+    line-height: 1.45;
+  }
+
+  .res-closing {
+    font-size: 13px;
+    color: var(--brown-l);
+    line-height: 1.75;
+    font-style: italic;
+    text-align: center;
+    padding: 0 6px;
+    margin-bottom: 28px;
+  }
+
+  /* ── ENVIANDO ── */
+  .sending-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 32px;
+    text-align: center;
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--cream-d);
+    border-top-color: var(--terra);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 24px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sending-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    color: var(--brown);
+    margin-bottom: 10px;
+  }
+
+  .sending-sub { font-size: 14px; color: var(--brown-l); }
+
+  /* ── ERROR ── */
+  .error-msg {
+    background: #FEF2F2;
+    border: 1px solid #FCA5A5;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #991B1B;
+    margin-top: 10px;
+    display: none;
+  }
+
+  /* ── ANIMACIONES ENTRADA ── */
+  .screen.on .w-title,
+  .screen.on .w-body,
+  .screen.on .bird,
+  .screen.on .q,
+  .screen.on .sub,
+  .screen.on .opts,
+  .screen.on .simple-opts,
+  .screen.on .slider-wrap,
+  .screen.on .form-g,
+  .screen.on .form-note {
+    animation: fadeUp 0.45s ease both;
+  }
+
+  .screen.on .sub { animation-delay: 0.05s; }
+  .screen.on .opts,
+  .screen.on .simple-opts,
+  .screen.on .slider-wrap { animation-delay: 0.1s; }
+  .screen.on .w-body { animation-delay: 0.07s; }
+  .screen.on .bird { animation-delay: 0.12s; }
+  .screen.on .opts .opt:nth-child(1) { animation-delay: 0.10s; }
+  .screen.on .opts .opt:nth-child(2) { animation-delay: 0.16s; }
+  .screen.on .opts .opt:nth-child(3) { animation-delay: 0.22s; }
+  .screen.on .opts .opt:nth-child(4) { animation-delay: 0.28s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ══════════════════════════════════════
+       S1: BIENVENIDA
+  ══════════════════════════════════════ -->
+  <div class="screen on" id="s1">
+    <div class="topbar">
+      <div class="logo"><a href="https://pepica.es">Pepica</a></div>
+      <span class="topbar-label">Metodología</span>
+    </div>
+    <div class="welcome-hero">
+      <div class="w-title">¿Tu marca <em>respira</em> o sobrevive?</div>
+      <div class="w-body">Un espacio de introspección para entender el estado real de tu sistema visual — y encontrar el camino hacia la claridad.</div>
+      <div class="bird">
+        <img
+          src="https://pepica.es/wp-content/uploads/2026/01/pepicaestudio_european_swallow_in_flight_calm_minimal_fine_art__14ee99a4-4bab-42b7-99a6-50e755f63eb0.png"
+          alt="Golondrina en vuelo — símbolo de Pepica"
+        />
+      </div>
+    </div>
+    <div class="welcome-foot">
+      <button class="btn" onclick="go(2)">Comenzar sesión de claridad <span>→</span></button>
+      <div class="timer">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        3 minutos de consulta
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       S2: SENTIMIENTO
+  ══════════════════════════════════════ -->
+  <div class="screen" id="s2">
+    <div class="topbar">
+      <button class="btn-nav" onclick="go(1)">←</button>
+      <div class="logo">Pepica</div>
+      <button class="btn-nav" onclick="restart()">✕</button>
+    </div>
+    <div class="progress"><div class="progress-fill" style="width:20%"></div></div>
+    <div class="step-badge"><div class="step-n">01</div><span class="step-phase">Diagnóstico de Marca</span></div>
+    <div class="content">
+      <div class="q">¿Cuál de estas verdades describe mejor tu presente?</div>
+      <div class="sub">Elige la que más resuene. No hay respuesta correcta.</div>
+      <div class="opts">
+        <div class="opt" onclick="pick('sent','Ruido',this)">
+          <div class="opt-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="6" opacity=".5"/><circle cx="12" cy="12" r="9" opacity=".25"/></svg></div>
+          <div class="check">✓</div>
+          <div class="opt-title">Ruido</div>
+          <div class="opt-desc">Mis activos visuales no cuentan una historia común.</div>
+        </div>
+        <div class="opt" onclick="pick('sent','Vacío',this)">
+          <div class="opt-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></div>
+          <div class="check">✓</div>
+          <div class="opt-title">Vacío</div>
+          <div class="opt-desc">Mi marca es invisible o no habita su propio lugar.</div>
+        </div>
+        <div class="opt" onclick="pick('sent','Agotamiento',this)">
+          <div class="opt-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="3" rx="1.5"/></svg></div>
+          <div class="check">✓</div>
+          <div class="opt-title">Agotamiento</div>
+          <div class="opt-desc">Crear contenido o decidir diseños me consume demasiada energía.</div>
+        </div>
+        <div class="opt" onclick="pick('sent','Inercia',this)">
+          <div class="opt-icon"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></div>
+          <div class="check">✓</div>
+          <div class="opt-title">Inercia</div>
+          <div class="opt-desc">Todo funciona, pero he perdido el control estético del rumbo.</div>
+        </div>
+      </div>
+      <button class="btn" id="btn2" onclick="go(3)" disabled>Continuar →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       S3: CARGA COGNITIVA
+  ══════════════════════════════════════ -->
+  <div class="screen" id="s3">
+    <div class="topbar">
+      <button class="btn-nav" onclick="go(2)">←</button>
+      <div class="logo">Pepica</div>
+      <button class="btn-nav" onclick="restart()">✕</button>
+    </div>
+    <div class="progress"><div class="progress-fill" style="width:50%"></div></div>
+    <div class="step-badge"><div class="step-n">02</div><span class="step-phase">Carga Cognitiva</span></div>
+    <div class="content">
+      <div class="q">¿Cuánta energía mental te consume gestionar tu imagen hoy?</div>
+      <div class="sub">Sé honesta contigo misma. Evalúa el peso real en tu día a día.<br>1 es flujo total · 10 es parálisis por análisis.</div>
+      <div class="slider-wrap">
+        <div class="sl-labels">
+          <div class="sl-lbl"><span class="mini">Mínimo</span><span class="word">Nada</span></div>
+          <div class="sl-lbl" style="text-align:right"><span class="mini">Máximo</span><span class="word">Total</span></div>
+        </div>
+        <div class="sl-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
+        <input type="range" id="slider" min="1" max="10" value="5" oninput="updSlider(this)">
+        <div class="sl-val" id="slval">5</div>
+      </div>
+      <button class="btn" onclick="go(4)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       S4: IA
+  ══════════════════════════════════════ -->
+  <div class="screen" id="s4">
+    <div class="topbar">
+      <button class="btn-nav" onclick="go(3)">←</button>
+      <div class="logo">Pepica</div>
+      <button class="btn-nav" onclick="restart()">✕</button>
+    </div>
+    <div class="progress"><div class="progress-fill" style="width:72%"></div></div>
+    <div class="step-badge"><div class="step-n">03</div><span class="step-phase">Diagnóstico de Marca</span></div>
+    <div class="content">
+      <div class="q">¿Te interesa integrar sistemas inteligentes para optimizar tu marca?</div>
+      <div class="sub">Buscamos el equilibrio entre eficiencia tecnológica y esencia humana de tu marca.</div>
+      <div class="simple-opts">
+        <div class="sopt" onclick="pickS('ia','Sí eficiencia',this)">
+          <div class="check">✓</div>
+          <div class="sopt-title">Sí, busco eficiencia</div>
+          <div class="sopt-desc">Deseo potenciar mi marca con análisis inteligente y automatización.</div>
+        </div>
+        <div class="sopt" onclick="pickS('ia','Curiosidad',this)">
+          <div class="check">✓</div>
+          <div class="sopt-title">Me genera curiosidad</div>
+          <div class="sopt-desc">Aún no tengo claro cómo la IA podría aportarme valor concreto.</div>
+        </div>
+        <div class="sopt" onclick="pickS('ia','Artesanal',this)">
+          <div class="check">✓</div>
+          <div class="sopt-title">Prefiero lo artesanal</div>
+          <div class="sopt-desc">Mi proceso creativo es manual y quiero mantenerlo así en esta etapa.</div>
+        </div>
+      </div>
+      <button class="btn" id="btn4" onclick="go(5)" disabled>Continuar →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       S5: CAPTURA DE DATOS
+  ══════════════════════════════════════ -->
+  <div class="screen" id="s5">
+    <div class="topbar">
+      <button class="btn-nav" onclick="go(4)">←</button>
+      <div class="logo">Pepica</div>
+      <button class="btn-nav" onclick="restart()">✕</button>
+    </div>
+    <div class="progress"><div class="progress-fill" style="width:90%"></div></div>
+    <div class="step-badge">
+      <div class="step-n" style="font-size:14px;font-family:'DM Sans',sans-serif;font-weight:400;color:var(--terra);letter-spacing:.1em;text-transform:uppercase;margin-bottom:0">Paso final</div>
+    </div>
+    <div class="content">
+      <div class="q" style="font-size:34px;margin-top:12px">Finaliza tu diagnóstico.</div>
+      <div class="sub">Para enviarte el análisis honesto y profundo de tu marca, ¿dónde puedo escribirte?</div>
+      <div class="form-g">
+        <label class="form-l">Nombre</label>
+        <input type="text" class="form-i" id="inp-nombre" placeholder="Tu nombre" autocomplete="given-name">
+      </div>
+      <div class="form-g">
+        <label class="form-l">Correo electrónico</label>
+        <input type="email" class="form-i" id="inp-email" placeholder="nombre@empresa.com" autocomplete="email">
+      </div>
+      <div class="form-note">Al enviar, aceptas recibir tu análisis y contenido editorial ocasional. Respetamos tu privacidad tanto como la pureza de tu marca.</div>
+      <button class="btn" id="btn-submit" onclick="submitDiagnosis()">Ver mi diagnóstico →</button>
+      <div class="error-msg" id="error-msg">Algo ha fallado. Por favor, inténtalo de nuevo.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       S6: ENVIANDO
+  ══════════════════════════════════════ -->
+  <div class="screen" id="s6">
+    <div class="topbar">
+      <div class="logo">Pepica</div>
+    </div>
+    <div class="sending-screen">
+      <div class="spinner"></div>
+      <div class="sending-title">Analizando tu marca…</div>
+      <div class="sending-sub">Un momento de claridad se está preparando para ti.</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       S7: RESULTADO
+  ══════════════════════════════════════ -->
+  <div class="screen" id="s7">
+    <div class="topbar" style="background:var(--terra);border-color:rgba(255,255,255,.15)">
+      <div class="logo" style="color:var(--white)">Pepica</div>
+      <button class="btn-nav" style="color:rgba(255,255,255,.6)" onclick="restart()">✕</button>
+    </div>
+    <div class="res-head">
+      <div class="res-tag">Diagnóstico de Sistema Visual</div>
+      <div class="res-title" id="r-title"></div>
+      <div class="res-type" id="r-type"></div>
+    </div>
+    <div class="res-body">
+      <div class="res-sec">Tu diagnóstico</div>
+      <div class="res-text" id="r-text"></div>
+      <div class="res-action">
+        <div class="res-action-l">Lo que necesitas</div>
+        <div class="res-action-t" id="r-action"></div>
+      </div>
+      <div class="res-closing">
+        "Este análisis es un primer paso. En Pepica no creemos en soluciones estándar, sino en sistemas que respiran. Si te resuena lo que has leído, podemos agendar una sesión breve para profundizar en tu caso."
+      </div>
+      <button class="btn" onclick="openWA()">Agendar una conversación →</button>
+    </div>
+  </div>
+
+</div><!-- /shell -->
+
+<script>
+// ── DIAGNÓSTICOS ──────────────────────────────────────────────
+const D = {
+  Ruido: {
+    title: 'Fragmentación de Identidad',
+    type: 'Enfoque: Branding e Identidad Sistémica',
+    text: 'Tu marca tiene piezas de valor, pero carece de un código genético que las una. Esto genera desconfianza inconsciente en tu cliente — perciben incoherencia aunque no sepan nombrarlo.',
+    action: 'Una Identidad Sistémica: un orden visual que permita que cada pieza sume a la anterior, sin esfuerzo y sin ruido.',
+    enfoque: 'Branding e Identidad Sistémica'
+  },
+  Vacío: {
+    title: 'Desconexión Tangible',
+    type: 'Enfoque: Espacios y Experiencias de Marca',
+    text: 'Tu proyecto tiene propósito, pero no ocupa espacio. Se siente etéreo e invisible porque no ha sido proyectado en un entorno — físico o digital — con alma propia.',
+    action: 'Diseñar Experiencias: que tu marca deje de ser un logo para convertirse en un lugar que se habita y se recuerda.',
+    enfoque: 'Diseño de Espacios y Experiencias de Marca'
+  },
+  Agotamiento: {
+    title: 'Fuga de Energía Creativa',
+    type: 'Enfoque: Comunicación Visual y Sistemas',
+    text: 'Estás dedicando más tiempo a la herramienta que a la estrategia. Tu marca te está robando energía en lugar de dártela. Cada decisión visual se convierte en un peso.',
+    action: 'Sistemas de Comunicación Eficientes: flujos de trabajo que automatizan lo técnico para que recuperes tu tiempo y tu energía creativa.',
+    enfoque: 'Comunicación Visual y Sistemas'
+  },
+  Inercia: {
+    title: 'Deriva Estética',
+    type: 'Enfoque: Dirección Creativa Estratégica',
+    text: 'Tu marca funciona, pero ha dejado de evolucionar. Se ha vuelto predecible o se ha mimetizado con el sector. Hay distancia entre quién eres hoy y cómo te muestras.',
+    action: 'Dirección Creativa Externa: una mirada que recupere la vanguardia y asegure que el rumbo visual sea siempre excelente.',
+    enfoque: 'Dirección Creativa Estratégica'
+  }
+};
+
+// ── ESTADO ────────────────────────────────────────────────────
+let state = { sent: null, carga: 5, ia: null };
+let cur = 1;
+
+// ── NAVEGACIÓN ────────────────────────────────────────────────
+function go(n) {
+  document.getElementById('s' + cur).classList.remove('on');
+  document.getElementById('s' + n).classList.add('on');
+  cur = n;
+  document.getElementById('s' + n).scrollTop = 0;
+}
+
+// ── OPCIONES CON ICONO ────────────────────────────────────────
+function pick(key, val, el) {
+  el.closest('.opts').querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  state[key] = val;
+  if (key === 'sent') document.getElementById('btn2').disabled = false;
+}
+
+// ── OPCIONES SIMPLES ─────────────────────────────────────────
+function pickS(key, val, el) {
+  el.closest('.simple-opts').querySelectorAll('.sopt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  state[key] = val;
+  if (key === 'ia') document.getElementById('btn4').disabled = false;
+}
+
+// ── SLIDER ────────────────────────────────────────────────────
+function updSlider(el) {
+  state.carga = parseInt(el.value);
+  const pct = ((el.value - 1) / 9) * 100;
+  el.style.background = `linear-gradient(to right, var(--terra) 0%, var(--terra) ${pct}%, var(--cream-dd) ${pct}%)`;
+  document.getElementById('slval').textContent = el.value;
+}
+
+// ── SUBMIT + WEBHOOK ─────────────────────────────────────────
+async function submitDiagnosis() {
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const email  = document.getElementById('inp-email').value.trim();
+
+  if (!email) {
+    document.getElementById('inp-email').focus();
+    return;
+  }
+
+  const d = D[state.sent] || D.Ruido;
+
+  // Ajuste si IA + Agotamiento
+  let action = d.action;
+  if (state.ia === 'Sí eficiencia' && state.sent === 'Agotamiento') {
+    action = 'Sistemas de Comunicación Inteligentes: flujos automatizados con IA que liberan tu tiempo y amplifican tu impacto creativo.';
+  }
+
+  // Mostrar pantalla de carga
+  go(6);
+
+  // Datos para Make
+  const payload = {
+    nombre:    nombre || 'Sin nombre',
+    email:     email,
+    sentimiento: state.sent,
+    carga_cognitiva: state.carga,
+    interes_ia: state.ia,
+    diagnostico: d.title,
+    enfoque: d.enfoque,
+    fecha: new Date().toISOString()
+  };
+
+  // Enviar a Make (si el webhook está configurado)
+  if (MAKE_WEBHOOK_URL && MAKE_WEBHOOK_URL !== 'TU_WEBHOOK_DE_MAKE_AQUI') {
+    try {
+      await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.warn('Webhook error (no crítico):', err);
+    }
+  }
+
+  // Mostrar resultado
+  document.getElementById('r-title').textContent  = d.title;
+  document.getElementById('r-type').textContent   = d.type;
+  document.getElementById('r-text').textContent   = d.text;
+  document.getElementById('r-action').textContent = action;
+
+  setTimeout(() => go(7), 1200);
+}
+
+// ── WHATSAPP ─────────────────────────────────────────────────
+function openWA() {
+  const nombre = document.getElementById('inp-nombre').value.trim();
+  const d = D[state.sent] || D.Ruido;
+  const msg = `Hola, acabo de hacer el diagnóstico de marca de Pepica. Mi resultado fue "${d.title}". Me gustaría agendar una conversación para profundizar.`;
+  window.open('https://wa.me/34618059857?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ── RESTART ──────────────────────────────────────────────────
+function restart() {
+  state = { sent: null, carga: 5, ia: null };
+  document.querySelectorAll('.opt, .sopt').forEach(o => o.classList.remove('sel'));
+  document.getElementById('btn2').disabled = true;
+  document.getElementById('btn4').disabled = true;
+  const sl = document.getElementById('slider');
+  sl.value = 5; updSlider(sl);
+  document.getElementById('inp-nombre').value = '';
+  document.getElementById('inp-email').value  = '';
+  document.getElementById('error-msg').style.display = 'none';
+  go(1);
+}
+</script>
+</body>
+</html>
